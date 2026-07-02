@@ -1,25 +1,48 @@
-# LangLib Zh-Hans
+# langLib_zh_hans
 
-Kristal `v0.10.x` 用本地化库，基于 GameBanana 上 Elioze 的 `LangLib` 改造，面向中文汉化工程使用。
+[![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE)
+<br>
+<img src="https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white" />
+<img src="https://img.shields.io/badge/Kristal-FF6B35?style=for-the-badge&logo=love2d&logoColor=white" />
 
-这个版本不考虑 Kristal 旧版兼容。它保留 `Game:loc(default, id, var)` 作为主 API，并补了中文工程常用能力：
+> 当前状态：✅ 稳定可用
 
-- `zh_hans` 语言 ID 和基础中文语言表
-- UTF-8 安全的 `[var:name]` 变量替换
-- `Game:setLanguage(lang)` / `Game:getLanguages()` / `Game:getLanguageName()`
-- 文本、选项、Tiled NPC/Interactable、物品、技能、菜单等常见入口 hook
-- 资源按语言覆盖：字体、图片、音频、音乐、视频都可放到 `lang/<语言>/...` 路径
-- `cutscene:text(..., {id = "text_id"})` 和 `cutscene:choicer(..., {ids = {...}})` 直接按 id 本地化
+![效果图](./screenshot.png)
+
+**langLib_zh_hans** — Kristal `v0.10.x` 用中文本地化库，基于 GameBanana 上 Elioze 的 [LangLib](https://gamebanana.com/mods/627141) 改造，面向中文汉化工程使用。
+
+| 简体中文 | English |
+|---------|---------|
+| 简体中文 | [English](./README_en.md) |
+
+## 简介
+
+`langLib_zh_hans` 为 Kristal 模组提供完整的中文汉化能力。它在保留 `Game:loc(default, id, var)` 主 API 的基础上，补充了中文工程常用特性：UTF-8 安全的变量替换、系统语言自动检测、运行时语言切换、以及覆盖字体/贴图/音频/视频的按语言资源系统。
+
+引入本库后，模组只需编写语言表 JSON 文件即可实现完整中文化，无需修改游戏逻辑代码。
+
+## 特性
+
+- 🌐 `zh_hans` 语言 ID 及完整中文语言表
+- 🔤 UTF-8 安全的 `[var:name]` 变量替换
+- 🔍 `auto` 模式自动检测系统语言并匹配最佳可用语言
+- 🔄 运行时语言切换（F6 快捷键），切换结果写入存档
+- 📝 `cutscene:text(..., {id = "text_id"})` 和 `cutscene:choicer(..., {ids = {...}})` 直接按 id 本地化
+- 🎨 资源按语言覆盖：字体、贴图、音频、音乐、视频均可放到 `lang/<语言>/...` 路径
+- 🔣 CJK 字符自动字间距调整与打字机速度修正
+- 📋 文本、选项、Tiled NPC/Interactable、物品、技能、菜单等常见入口自动 hook
+- 🖥️ 可选 `DarkConfigMenu` 集成，设置菜单中出现语言切换项
+- 🆓 双许可证授权（MIT / Apache 2.0）
 
 ## 安装
 
-把整个目录放进目标模组：
+将整个目录放入目标模组：
 
 ```text
 mods/your_mod/libraries/langLib_zh_hans/
 ```
 
-目录中需要有：
+目录中需要包含：
 
 ```text
 lib.json
@@ -28,6 +51,12 @@ lang/en.json
 lang/zh_hans.json
 scripts/hooks/...
 ```
+
+## 依赖
+
+| 库 | 说明 |
+|---|---|
+| [Kristal](https://github.com/KristalTeam/Kristal) | 游戏引擎，`v0.10.0` 或更高版本 |
 
 ## 配置
 
@@ -44,7 +73,7 @@ scripts/hooks/...
 }
 ```
 
-也可以在你的 `mod.json` 覆盖：
+也可以在目标模组的 `mod.json` 中覆盖：
 
 ```json
 "config": {
@@ -59,17 +88,15 @@ scripts/hooks/...
 }
 ```
 
-`defaultLanguage` 可以设置为具体语言 ID，也可以设置为 `"auto"`。`"auto"` 会读取系统语言，并从 `languages` 列表中选择最接近的可用语言；匹配不到时回退到列表首项或英文。
+`defaultLanguage` 可设置为具体语言 ID 或 `"auto"`。`"auto"` 会读取系统语言并从 `languages` 列表中选择最接近的可用语言；匹配不到时回退到列表首项或英文。
 
-## 语言文件
+## 使用方式
 
-模组自己的翻译放在：
+### 语言文件
 
-```text
-mods/your_mod/lang/zh_hans.json
-```
+模组翻译放在 `mods/your_mod/lang/zh_hans.json`，与库语言表同名 key 会被覆盖。
 
-也兼容这些命名：
+兼容以下命名：
 
 ```text
 lang/zh_hans.json
@@ -78,14 +105,12 @@ lang/zh-hans.json
 lang/lang_zh-hans.json
 ```
 
-库内语言表会先加载，模组语言表后加载并覆盖同名 key。
-
-## 文本用法
+### 文本本地化
 
 直接调用：
 
 ```lua
-cutscene:text(Game:loc("* Hello, [var:name].", "room1.hello", {name = "Kris"}))
+cutscene:text(Game:loc("* 你好，[var:name]。", "room1.hello", {name = "Kris"}))
 ```
 
 语言表：
@@ -96,7 +121,7 @@ cutscene:text(Game:loc("* Hello, [var:name].", "room1.hello", {name = "Kris"}))
 }
 ```
 
-也可以在 `cutscene:text` 里直接传 id：
+也可以在 `cutscene:text` 中直接传 id：
 
 ```lua
 cutscene:text("* Hello, [var:name].", "smile", "ralsei", {
@@ -105,15 +130,13 @@ cutscene:text("* Hello, [var:name].", "smile", "ralsei", {
 })
 ```
 
-选项：
+### 选项本地化
 
 ```lua
 local choice = cutscene:choicer({"Yes", "No"}, {
     ids = {"choice.yes", "choice.no"}
 })
 ```
-
-语言表：
 
 ```json
 {
@@ -122,132 +145,52 @@ local choice = cutscene:choicer({"Yes", "No"}, {
 }
 ```
 
-## Tiled NPC / Interactable
+### 资源本地化
 
-原库约定仍保留：
-
-```text
-text1 = default text
-id1   = text.id
-```
-
-多行文本可按 `id1_1`、`id1_2` 或 Tiled 多值属性方式配置，hook 会把 `id` 找不到的行回退到默认文本。
-
-## 资源本地化
-
-普通资源：
+当语言为 `zh_hans` 时，以下资源请求会优先查找语言覆盖路径，找不到则回退：
 
 ```lua
-Assets.getTexture("ui/title")
-Assets.getFont("main")
-Assets.playSound("voice/noelle")
+Assets.getTexture("ui/title")    -- → lang/zh_hans/ui/title.png
+Assets.getFont("main")           -- → lang/zh_hans/main.ttf
+Assets.playSound("voice/noelle") -- → lang/zh_hans/voice/noelle.wav
 ```
 
-当当前语言是 `zh_hans` 时，库会优先查：
+### 中文字体
 
-```text
-assets/sprites/lang/zh_hans/ui/title.png
-assets/fonts/lang/zh_hans/main.ttf
-assets/sounds/lang/zh_hans/voice/noelle.wav
-```
+库内已内置中文 fallback 字体配置。策略：
 
-找不到时回退到原资源。
+- 英文/ASCII 优先使用 Kristal 原版英文字体，避免中文模式下英文变糊
+- 中文字符回退到内置中文字体
 
-## 中文字体
+如需自定义中文字体，在目标模组中放同路径文件即可覆盖。
 
-库内已经自带一套 `zh_hans` 字体配置，中文用户引入库后即可显示中文。策略是：
-
-- 英文 / ASCII 优先使用 Kristal 原版英文字体，避免中文模式下英文变糊。
-- 中文字符回退到旧版 FZBitmap / Unifont 字体，保持此前中文字号表现。
-
-库内字体文件：
-
-```text
-assets/fonts/lang/zh_hans/main.ttf
-assets/fonts/lang/zh_hans/main.json
-assets/fonts/lang/zh_hans/main_mono.ttf
-assets/fonts/lang/zh_hans/main_mono.json
-assets/fonts/lang/zh_hans/plain.ttf
-assets/fonts/lang/zh_hans/plain.json
-assets/fonts/lang/zh_hans/zh_main.ttf
-assets/fonts/lang/zh_hans/zh_main.json
-assets/fonts/lang/zh_hans/zh_plain.ttf
-assets/fonts/lang/zh_hans/zh_plain.json
-```
-
-`main.ttf` / `main_mono.ttf` / `plain.ttf` 是英文字体入口；`zh_main.ttf` / `zh_plain.ttf` 是中文 fallback。
-
-`main.json` 示例：
-
-```json
-{
-    "defaultSize": 32,
-    "fallbacks": [
-        {
-            "font": "lang/zh_hans/zh_main",
-            "size": 24
-        }
-    ]
-}
-```
-
-如果你的工程想使用自己的中文字体，只需要在目标模组中放同路径文件即可覆盖库内字体。
-
-## 运行时切换语言
+### 运行时切换
 
 ```lua
 Game:setLanguage("zh_hans")
 Game:setLanguage("en")
 ```
 
-语言会写入存档：
+程序内按 F6 可直接切换。
 
-```lua
-data.lang
-data.langSelected
-```
+## 上游来源与参考
 
-如果启用了可选 `DarkConfigMenu` hook，设置菜单里会出现语言切换项。
+本库基于 GameBanana 的 [LangLib](https://gamebanana.com/mods/627141) 改造，并参考了以下汉化项目：
 
-## 常用 key
+| 项目 | 作者/组织 |
+|------|-----------|
+| [LangLib](https://gamebanana.com/mods/627141) | Elioze |
+| 若干其他 Kristal 项目的汉化参考 | [WasneetPotato](https://space.bilibili.com/1641628190) |
+| [DeltaruneChinese](https://github.com/gm3dr/DeltaruneChinese) | dr好人汉化组 |
+| 中文 fork | Aik/Codex |
 
-库自带基础 key：
+## 参与贡献
 
-```text
-use_item
-toss_item
-key_item
-attack_stat
-defense_stat
-magic_stat
-master_volume_config
-controls_config
-fullscreen_config
-auto_run_config
-lang_config
-back_config
-item_battleText
-spell_castMessage
-```
+欢迎提交 Issue 或 Pull Request。
 
-物品、技能、角色等自动 key 规则沿用原 LangLib：
+## 许可证
 
-```text
-item_<id>_name
-item_<id>_description
-item_<id>_check
-spell_<id>_name
-spell_<id>_description
-chara_<id>_name
-actor_<id>_name
-```
+本项目采用双许可证授权，您可以选择以下任一许可证：
 
-## 上游来源
-
-本库基于 GameBanana 的 `LangLib`：
-
-```text
-https://gamebanana.com/mods/627141
-```
-
-当前没有在包内发现 GitHub 远程信息，也没有在公开 GitHub 仓库搜索中找到明确上游仓库。若后续找到官方仓库，可以把本目录作为 fork 分支内容迁移过去。
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) 或 http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) 或 http://opensource.org/licenses/MIT)
