@@ -1,0 +1,22 @@
+{
+    "id": "langLibZh",
+    "authors": ["Elioze", "Aik/Codex zh-hans fork"],
+    "version": "1.1.0-zh-hans",
+    "engineVer": "v0.10.0",
+    "config": {
+        "defaultLanguage": "en",
+        "languages": ["en", "zh_hans"],
+        "languageNames": {
+            "en": "English",
+            "zh_hans": "简体中文"
+        },
+        "lowerAndUpper": {
+            "à": "À", "â": "Â", "ä": "Ä",
+            "é": "É", "è": "È", "ê": "Ê", "ë": "Ë",
+            "î": "Î", "ï": "Ï",
+            "ô": "Ô", "ö": "Ö",
+            "ù": "Ù", "û": "Û", "ü": "Ü",
+            "ç": "Ç"
+        }
+    }
+}
