@@ -3,6 +3,27 @@ local langLibZh = {}
 local DEFAULT_LANGUAGE = "en"
 local FALLBACK_LANGUAGE = "en"
 local AUTO_LANGUAGE = "auto"
+local CJK_FIXED_TEXT_SPACING = 2
+local CJK_DIALOGUE_TEXT_SPACING = 4
+local CJK_DIALOGUE_Y_OFFSET = -1
+local CJK_TYPEWRITER_SPEED_MULTIPLIER = 0.85
+
+local STATIC_TEXT_IDS = {
+    ["Save"] = "save_menu_save",
+    ["Return"] = "save_menu_return",
+    ["Storage"] = "save_menu_storage",
+    ["STORAGE"] = "storage_storage",
+    ["Recruits"] = "save_menu_recruits",
+    ["File Saved"] = "save_menu_file_saved",
+    ["File saved."] = "save_menu_file_saved_period",
+    ["New File"] = "save_menu_new_file",
+    ["Return to Title"] = "save_menu_return_to_title",
+    ["Really return to title?"] = "save_menu_really_return_to_title",
+    ["Yes"] = "yes",
+    ["No"] = "no",
+    ["Useless\nanalysis"] = "act_check_useless_analysis",
+    ['Whether the "Check" act in battle says "Useless analysis" or not'] = "mod_config_check_act_description_description",
+}
 
 local function getConfig(key, merge, deep_merge)
     if Kristal and Kristal.getLibConfig then
@@ -167,6 +188,205 @@ end
 local function getDefaultLanguage(available)
     local configured = getConfig("defaultLanguage") or DEFAULT_LANGUAGE
     return resolveLanguageId(configured, available) or available[1] or DEFAULT_LANGUAGE
+end
+
+local function isCjkCodepoint(codepoint)
+    return (codepoint >= 0x2E80 and codepoint <= 0x9FFF)
+        or (codepoint >= 0xF900 and codepoint <= 0xFAFF)
+        or (codepoint >= 0xFE10 and codepoint <= 0xFE1F)
+        or (codepoint >= 0xFF00 and codepoint <= 0xFFEF)
+        or (codepoint >= 0x20000 and codepoint <= 0x2FA1F)
+end
+
+local function hasCjkText(text)
+    for _, codepoint in utf8.codes(text) do
+        if isCjkCodepoint(codepoint) then
+            return true
+        end
+    end
+    return false
+end
+
+local function hasMultipleCodepoints(text)
+    local count = 0
+    for _ in utf8.codes(text) do
+        count = count + 1
+        if count > 1 then
+            return true
+        end
+    end
+    return false
+end
+
+local function addCjkTextSpacing(text, spacing_value, offset_y)
+    if type(text) ~= "string" then
+        return text
+    end
+
+    if Game.lang ~= "zh_hans" or not hasCjkText(text) or text:find("%[spacing:") then
+        return text
+    end
+
+    local out = {}
+    if offset_y and not text:find("%[offset:") then
+        table.insert(out, "[offset:0," .. tostring(offset_y) .. "]")
+    end
+
+    local spacing = false
+    local index = 1
+    while index <= #text do
+        local char = text:sub(index, index)
+        if char == "[" then
+            local close = text:find("]", index, true)
+            if close then
+                table.insert(out, text:sub(index, close))
+                index = close + 1
+            else
+                table.insert(out, char)
+                index = index + 1
+            end
+        else
+            local codepoint = utf8.codepoint(text, index)
+            local next_index = utf8.offset(text, 2, index) or (#text + 1)
+            local cjk = isCjkCodepoint(codepoint)
+
+            if cjk and not spacing then
+                table.insert(out, "[spacing:" .. tostring(spacing_value) .. "]")
+                spacing = true
+            elseif not cjk and spacing then
+                table.insert(out, "[spacing:0]")
+                spacing = false
+            end
+
+            table.insert(out, text:sub(index, next_index - 1))
+            index = next_index
+        end
+    end
+
+    if spacing then
+        table.insert(out, "[spacing:0]")
+    end
+
+    return table.concat(out)
+end
+
+local function addCjkTextSpacingValue(value, spacing_value, offset_y)
+    if type(value) == "table" then
+        local out = {}
+        for key, item in pairs(value) do
+            out[key] = addCjkTextSpacingValue(item, spacing_value, offset_y)
+        end
+        return out
+    end
+    return addCjkTextSpacing(value, spacing_value, offset_y)
+end
+
+local function localizeStaticText(text)
+    if type(text) ~= "string" or not Game or Game.lang ~= "zh_hans" then
+        return text
+    end
+
+    local id = STATIC_TEXT_IDS[text]
+    if id then
+        return Game:loc(text, id)
+    end
+
+    local slot = text:match("^Overwrite Slot (%d+)%?$")
+    if slot then
+        return Game:loc("Overwrite Slot [var:slot]?", "save_menu_overwrite_slot", { slot = slot })
+    end
+
+    return text
+end
+
+local function localizeStaticTextValue(value)
+    if type(value) == "table" then
+        local out = {}
+        for key, item in pairs(value) do
+            out[key] = localizeStaticTextValue(item)
+        end
+        return out
+    end
+    return localizeStaticText(value)
+end
+
+local function shouldPrintWithCjkSpacing(text)
+    return type(text) == "string"
+        and Game.lang == "zh_hans"
+        and hasCjkText(text)
+        and hasMultipleCodepoints(text)
+end
+
+local function getCjkPrintedTextWidth(font, text)
+    local width = 0
+    for _, codepoint in utf8.codes(text) do
+        local char = utf8.char(codepoint)
+        width = width + font:getWidth(char)
+        if isCjkCodepoint(codepoint) then
+            width = width + CJK_FIXED_TEXT_SPACING
+        end
+    end
+    return width
+end
+
+local function printCjkTextWithSpacing(orig, text, x, y, r, sx, sy, ox, oy, kx, ky)
+    text = localizeStaticText(text)
+
+    if not shouldPrintWithCjkSpacing(text) then
+        return orig(text, x, y, r, sx, sy, ox, oy, kx, ky)
+    end
+
+    local font = love.graphics.getFont()
+    local cursor_x = 0
+    local cursor_y = 0
+
+    love.graphics.push()
+    love.graphics.translate(x or 0, y or 0)
+    if r then
+        love.graphics.rotate(r)
+    end
+    love.graphics.scale(sx or 1, sy or sx or 1)
+    if kx or ky then
+        love.graphics.shear(kx or 0, ky or 0)
+    end
+    love.graphics.translate(-(ox or 0), -(oy or 0))
+
+    for _, codepoint in utf8.codes(text) do
+        local char = utf8.char(codepoint)
+        if char == "\n" then
+            cursor_x = 0
+            cursor_y = cursor_y + font:getHeight()
+        else
+            orig(char, cursor_x, cursor_y)
+            cursor_x = cursor_x + font:getWidth(char)
+            if isCjkCodepoint(codepoint) then
+                cursor_x = cursor_x + CJK_FIXED_TEXT_SPACING
+            end
+        end
+    end
+
+    love.graphics.pop()
+end
+
+local function printfCjkTextWithSpacing(print_orig, printf_orig, text, x, y, limit, align, r, sx, sy, ox, oy, kx, ky)
+    text = localizeStaticText(text)
+
+    if not shouldPrintWithCjkSpacing(text) or text:find("\n", 1, true) then
+        return printf_orig(text, x, y, limit, align, r, sx, sy, ox, oy, kx, ky)
+    end
+
+    local font = love.graphics.getFont()
+    local text_width = getCjkPrintedTextWidth(font, text)
+    local print_x = x or 0
+    limit = limit or text_width
+
+    if align == "center" then
+        print_x = print_x + ((limit - text_width) / 2)
+    elseif align == "right" then
+        print_x = print_x + limit - text_width
+    end
+
+    return printCjkTextWithSpacing(print_orig, text, print_x, y, r, sx, sy, ox, oy, kx, ky)
 end
 
 local function getLanguageList()
@@ -528,6 +748,15 @@ function langLibZh:postInit()
         return table.concat(result)
     end)
 
+    local graphics_print = love.graphics.print
+    HookSystem.hook(love.graphics, "print", function(orig, text, ...)
+        return printCjkTextWithSpacing(orig, text, ...)
+    end)
+
+    HookSystem.hook(love.graphics, "printf", function(orig, text, ...)
+        return printfCjkTextWithSpacing(graphics_print, orig, text, ...)
+    end)
+
     HookSystem.hook(Text, "init", function(orig, self, text, x, y, w, h, options)
         options = options or {}
         local id = options["id"] or options["loc_id"] or options["loc"]
@@ -539,6 +768,11 @@ function langLibZh:postInit()
         end
 
         return orig(self, text, x, y, w, h, options)
+    end)
+
+    HookSystem.hook(Text, "setText", function(orig, self, text)
+        text = localizeStaticTextValue(text)
+        return orig(self, addCjkTextSpacingValue(text, CJK_FIXED_TEXT_SPACING))
     end)
 
     HookSystem.hook(WorldCutscene, "text", function(orig, self, text, portrait, actor, options)
@@ -561,6 +795,33 @@ function langLibZh:postInit()
             text = Game:concat(text, options["var"])
         end
         return orig(self, text, portrait, actor, options)
+    end)
+
+    HookSystem.hook(DialogueText, "setText", function(orig, self, text, ...)
+        text = localizeStaticTextValue(text)
+        return orig(self, addCjkTextSpacingValue(text, CJK_DIALOGUE_TEXT_SPACING, CJK_DIALOGUE_Y_OFFSET), ...)
+    end)
+
+    HookSystem.hook(DialogueText, "updateTypewriter", function(orig, self)
+        if Game.lang ~= "zh_hans"
+            or type(self.text) ~= "string"
+            or not hasCjkText(self.text)
+            or not self.state
+            or type(self.state.speed) ~= "number"
+        then
+            return orig(self)
+        end
+
+        local speed = self.state.speed
+        self.state.speed = speed * CJK_TYPEWRITER_SPEED_MULTIPLIER
+        local ok, result = pcall(orig, self)
+        self.state.speed = speed
+
+        if not ok then
+            error(result)
+        end
+
+        return result
     end)
 
     HookSystem.hook(WorldCutscene, "choicer", function(orig, self, choices, options)

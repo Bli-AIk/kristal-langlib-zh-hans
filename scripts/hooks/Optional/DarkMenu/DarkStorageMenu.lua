@@ -26,7 +26,10 @@ function DarkStorageMenu:drawStorage(list)
     love.graphics.setFont(self.font)
 
     Draw.setColor(self.list == list and PALETTE["world_light_gray"] or PALETTE["world_dark_gray"])
-    love.graphics.print(storage.id == "items" and Game:loc("POCKET", "pocket_sotrage") or storage.name, name_text_x, name_text_y)
+    local storage_name = storage.id == "items"
+        and Game:loc("POCKET", "pocket_sotrage")
+        or Game:loc(storage.name, "storage_" .. tostring(storage.id))
+    love.graphics.print(storage_name, name_text_x, name_text_y)
 
     local max_pages = self:getMaxPages(list)
     if max_pages > 1 then
