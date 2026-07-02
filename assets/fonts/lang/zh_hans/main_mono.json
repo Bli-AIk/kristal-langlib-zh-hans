@@ -1,0 +1,15 @@
+{
+    "defaultSize": 32,
+    "lineSpacing": 28,
+
+    "fallbacks": [
+        {
+            "font": "lang/zh_hans/zh_main",
+            "size": 24
+        },
+        {
+            "font": "ja_main",
+            "size": 28
+        }
+    ]
+}

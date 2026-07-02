@@ -1,0 +1,14 @@
+{
+    "defaultSize": 16,
+
+    "fallbacks": [
+        {
+            "font": "lang/zh_hans/zh_plain",
+            "size": 16
+        },
+        {
+            "font": "ja_main",
+            "size": 16
+        }
+    ]
+}

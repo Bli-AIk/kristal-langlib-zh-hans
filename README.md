@@ -153,9 +153,12 @@ assets/sounds/lang/zh_hans/voice/noelle.wav
 
 ## 中文字体
 
-库不自带中文字体文件，避免字体授权风险。要显示中文，你需要在游戏或模组里放支持中文的字体，并配置 `main.json`、`main_mono.json`、`plain.json` 等。
+库内已经自带一套 `zh_hans` 字体配置，中文用户引入库后即可显示中文。策略是：
 
-推荐方式是在目标模组加入语言专用字体：
+- 英文 / ASCII 优先使用 Kristal 原版英文字体，避免中文模式下英文变糊。
+- 中文字符回退到旧版 FZBitmap / Unifont 字体，保持此前中文字号表现。
+
+库内字体文件：
 
 ```text
 assets/fonts/lang/zh_hans/main.ttf
@@ -164,23 +167,29 @@ assets/fonts/lang/zh_hans/main_mono.ttf
 assets/fonts/lang/zh_hans/main_mono.json
 assets/fonts/lang/zh_hans/plain.ttf
 assets/fonts/lang/zh_hans/plain.json
+assets/fonts/lang/zh_hans/zh_main.ttf
+assets/fonts/lang/zh_hans/zh_main.json
+assets/fonts/lang/zh_hans/zh_plain.ttf
+assets/fonts/lang/zh_hans/zh_plain.json
 ```
 
-示例 `main.json`：
+`main.ttf` / `main_mono.ttf` / `plain.ttf` 是英文字体入口；`zh_main.ttf` / `zh_plain.ttf` 是中文 fallback。
+
+`main.json` 示例：
 
 ```json
 {
-    "defaultSize": 24,
+    "defaultSize": 32,
     "fallbacks": [
         {
-            "font": "ja_main",
+            "font": "lang/zh_hans/zh_main",
             "size": 24
         }
     ]
 }
 ```
 
-如果你的工程已经在全局 `assets/fonts/main.ttf` 里替换了中文字体，也可以不放语言专用字体。
+如果你的工程想使用自己的中文字体，只需要在目标模组中放同路径文件即可覆盖库内字体。
 
 ## 运行时切换语言
 
