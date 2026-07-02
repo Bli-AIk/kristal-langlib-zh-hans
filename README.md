@@ -49,7 +49,7 @@ scripts/hooks/...
 ```json
 "config": {
     "langLibZh": {
-        "defaultLanguage": "zh_hans",
+        "defaultLanguage": "auto",
         "languages": ["en", "zh_hans"],
         "languageNames": {
             "en": "English",
@@ -58,6 +58,8 @@ scripts/hooks/...
     }
 }
 ```
+
+`defaultLanguage` 可以设置为具体语言 ID，也可以设置为 `"auto"`。`"auto"` 会读取系统语言，并从 `languages` 列表中选择最接近的可用语言；匹配不到时回退到列表首项或英文。
 
 ## 语言文件
 
