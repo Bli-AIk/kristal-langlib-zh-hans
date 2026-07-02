@@ -4,7 +4,7 @@
 
     "use_item": "使用",
     "toss_item": "丢弃",
-    "key_item": "钥匙",
+    "key_item": "关键",
     "no_item_storage": "---",
     "pocket_sotrage": "口袋",
     "page_storage": "页",
@@ -61,7 +61,7 @@
     "item_battleText": "* [var:charaName] 使用了 [var:useName]!",
     "dark_item_toss_confirm": "真的要丢掉\n[var:itemName] 吗？",
     "itemType_item": "物品",
-    "itemType_key": "钥匙物品",
+    "itemType_key": "关键物品",
     "itemType_weapon": "武器",
     "itemType_armor": "防具",
     "itemType_unknown": "未知",
