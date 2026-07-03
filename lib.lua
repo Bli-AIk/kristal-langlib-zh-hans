@@ -21,8 +21,24 @@ local STATIC_TEXT_IDS = {
     ["Really return to title?"] = "save_menu_really_return_to_title",
     ["Yes"] = "yes",
     ["No"] = "no",
+    ["YES"] = "yes",
+    ["NO"] = "no",
+    ["CONTINUE"] = "gameover_continue",
+    ["GIVE UP"] = "gameover_give_up",
+    ["[speed:0.5][spacing:8][voice:none]IT APPEARS YOU\nHAVE REACHED[wait:30]\n\n   AN END."] = "gameover_end",
+    ["[speed:0.5][spacing:8][voice:none]WILL YOU TRY AGAIN?"] = "gameover_try_again",
+    ["[speed:0.5][spacing:8][voice:none]WILL YOU PERSIST?"] = "gameover_persist",
+    ["[noskip][speed:0.5][spacing:8][voice:none] THEN, THE FUTURE\n IS IN YOUR HANDS."] = "gameover_future",
+    ["[noskip][speed:0.5][spacing:8][voice:none] THEN THE WORLD[wait:30] \n WAS COVERED[wait:30] \n IN DARKNESS."] = "gameover_darkness",
     ["Useless\nanalysis"] = "act_check_useless_analysis",
     ['Whether the "Check" act in battle says "Useless analysis" or not'] = "mod_config_check_act_description_description",
+}
+
+local GAMEOVER_PARTY_TEXT_IDS = {
+    ["  Come on,[wait:5]\n  that all you got!?"] = "gameover_susie_challenge",
+    ["  Kris,[wait:5]\n  get up...!"] = "gameover_susie_get_up",
+    ["  This is not\n  your fate...!"] = "gameover_ralsei_fate",
+    ["  Please,[wait:5]\n  don't give up!"] = "gameover_ralsei_dont_give_up",
 }
 
 local function getConfig(key, merge, deep_merge)
@@ -289,6 +305,12 @@ local function localizeStaticText(text)
     local id = STATIC_TEXT_IDS[text]
     if id then
         return Game:loc(text, id)
+    end
+
+    local prefix, gameover_party_text = text:match("^(%[speed:0%.5%]%[spacing:%d+%]%[voice:[^%]]+%])(.*)$")
+    id = gameover_party_text and GAMEOVER_PARTY_TEXT_IDS[gameover_party_text]
+    if id then
+        return prefix .. Game:loc(gameover_party_text, id)
     end
 
     local slot = text:match("^Overwrite Slot (%d+)%?$")
@@ -756,6 +778,12 @@ function langLibZh:postInit()
     HookSystem.hook(love.graphics, "printf", function(orig, text, ...)
         return printfCjkTextWithSpacing(graphics_print, orig, text, ...)
     end)
+
+    if GonerChoice then
+        HookSystem.hook(GonerChoice, "getChoiceText", function(orig, self, choice, x, y)
+            return localizeStaticText(orig(self, choice, x, y))
+        end)
+    end
 
     HookSystem.hook(Text, "init", function(orig, self, text, x, y, w, h, options)
         options = options or {}
