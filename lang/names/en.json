@@ -19,10 +19,6 @@
         "noelle": {
             "translated": "Noelle",
             "original": "Noelle"
-        },
-        "vessel": {
-            "translated": "Vessel",
-            "original": "Vessel"
         }
     },
     "actor": {
@@ -49,10 +45,6 @@
         "starwalker": {
             "translated": "Starwalker",
             "original": "Starwalker"
-        },
-        "vessel": {
-            "translated": "Vessel",
-            "original": "Vessel"
         }
     }
 }
