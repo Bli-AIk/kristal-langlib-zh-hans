@@ -25,13 +25,14 @@
 
 - 🌐 `zh_hans` 语言 ID 及完整中文语言表
 - 🔤 UTF-8 安全的 `[var:name]` 变量替换
+- 👤 `Game:locName(category, id, default)` 支持角色名译名 / 原名切换
 - 🔍 `auto` 模式自动检测系统语言并匹配最佳可用语言
 - 🔄 运行时语言切换（F6 快捷键），切换结果写入存档
 - 📝 `cutscene:text(..., {id = "text_id"})` 和 `cutscene:choicer(..., {ids = {...}})` 直接按 id 本地化
 - 🎨 资源按语言覆盖：字体、贴图、音频、音乐、视频均可放到 `lang/<语言>/...` 路径
 - 🔣 CJK 字符自动字间距调整与打字机速度修正
 - 📋 文本、选项、Tiled NPC/Interactable、物品、技能、菜单等常见入口自动 hook
-- 🖥️ 可选 `DarkConfigMenu` 集成，设置菜单中出现语言切换项
+- 🖥️ 可选 `DarkConfigMenu` 集成，设置菜单中出现语言设置子页
 - 🆓 双许可证授权（MIT / Apache 2.0）
 
 ## 安装
@@ -49,6 +50,8 @@ lib.json
 lib.lua
 lang/en.json
 lang/zh_hans.json
+lang/names/en.json
+lang/names/zh_hans.json
 scripts/hooks/...
 ```
 
@@ -65,6 +68,7 @@ scripts/hooks/...
 ```json
 {
     "defaultLanguage": "en",
+    "defaultNameStyle": "translated",
     "languages": ["en", "zh_hans"],
     "languageNames": {
         "en": "English",
@@ -90,6 +94,8 @@ scripts/hooks/...
 
 `defaultLanguage` 可设置为具体语言 ID 或 `"auto"`。`"auto"` 会读取系统语言并从 `languages` 列表中选择最接近的可用语言；匹配不到时回退到列表首项或英文。
 
+`defaultNameStyle` 可设置为 `"translated"` 或 `"original"`，控制默认使用译名还是原名。
+
 ## 使用方式
 
 ### 语言文件
@@ -103,6 +109,51 @@ lang/zh_hans.json
 lang/lang_zh_hans.json
 lang/zh-hans.json
 lang/lang_zh-hans.json
+```
+
+### 角色名
+
+角色名可以单独放在：
+
+```text
+lang/names/zh_hans.json
+```
+
+格式：
+
+```json
+{
+    "chara": {
+        "kris": {
+            "translated": "克里斯",
+            "original": "Kris"
+        }
+    },
+    "actor": {
+        "starwalker": {
+            "translated": "星之行者",
+            "original": "Starwalker"
+        }
+    }
+}
+```
+
+`chara` 用于队伍成员等 UI 名称，`actor` 用于 Actor 名称。旧的 `chara_<id>_name`、`actor_<id>_name` 仍然兼容，加载时也会自动并入运行时 `names` 表。
+
+正文里可以写名字占位符，让同一条翻译跟随设置切换：
+
+```json
+{
+    "room1.hello": "* 你好，[name:chara:kris]。"
+}
+```
+
+运行时也可以直接取名：
+
+```lua
+Game:locName("chara", "kris", "Kris")
+Game:setNameStyle("original")
+Game:setNameStyle("translated")
 ```
 
 ### 文本本地化
@@ -172,6 +223,14 @@ Game:setLanguage("en")
 ```
 
 程序内按 F6 可直接切换。
+
+语言和名字显示方式会写入存档：
+
+```lua
+data.lang
+data.langSelected
+data.langNameStyle
+```
 
 ## 上游来源与参考
 

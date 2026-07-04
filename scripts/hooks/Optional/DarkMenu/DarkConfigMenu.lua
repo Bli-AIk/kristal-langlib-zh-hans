@@ -39,6 +39,32 @@ local function playMenuSound(self, sound)
     end
 end
 
+local function getLanguageMenuSelection(self)
+    self.language_selected = self.language_selected or 1
+    return self.language_selected
+end
+
+local function changeLanguage(direction)
+    local old_selected = Game.langSelected
+    Game.langSelected = Game.langSelected + direction
+
+    local languages = Game.langAvailable or Game.langAvalable or {"en"}
+    Game.langSelected = MathUtils.clamp(Game.langSelected, 1, #languages)
+    if old_selected ~= Game.langSelected then
+        Game:setLanguage(languages[Game.langSelected])
+        return true
+    end
+    return false
+end
+
+local function changeNameStyle(direction)
+    local styles = Game:getNameStyles()
+    local old_style = Game:getNameStyle()
+    Game.langNameStyleSelected = MathUtils.clamp((Game.langNameStyleSelected or 1) + direction, 1, #styles)
+    Game:setNameStyle(styles[Game.langNameStyleSelected])
+    return old_style ~= Game:getNameStyle()
+end
+
 function DarkConfigMenu:update()
     if self.state == "MAIN" then
         if Input.pressed("confirm") then
@@ -59,6 +85,7 @@ function DarkConfigMenu:update()
                 Kristal.Config["autoRun"] = not Kristal.Config["autoRun"]
             elseif self.currently_selected == 6 then
                 self.state = "LANGUAGE"
+                self.language_selected = 1
             elseif self.currently_selected == 7 then
                 Game:returnToMenu()
             elseif self.currently_selected == 8 then
@@ -123,25 +150,54 @@ function DarkConfigMenu:update()
             self.noise_timer = 3
         end
     elseif self.state == "LANGUAGE" then
-        if Input.pressed("cancel") or Input.pressed("confirm") then
+        if Input.pressed("cancel") then
             playMenuSound(self, "ui_select")
             self.state = "MAIN"
+            self.currently_selected = 6
             return
         end
 
-        local old_selected = Game.langSelected
-        if Input.pressed("left") then
-            Game.langSelected = Game.langSelected - 1
-        end
-        if Input.pressed("right") then
-            Game.langSelected = Game.langSelected + 1
+        if Input.pressed("confirm") then
+            if getLanguageMenuSelection(self) == 3 then
+                playMenuSound(self, "ui_select")
+                self.state = "MAIN"
+                self.currently_selected = 6
+            else
+                playMenuSound(self, "ui_select")
+            end
+            return
         end
 
-        local languages = Game.langAvailable or Game.langAvalable or {"en"}
-        Game.langSelected = MathUtils.clamp(Game.langSelected, 1, #languages)
-        if old_selected ~= Game.langSelected then           
-            Game:setLanguage(languages[Game.langSelected])
-            
+        local old_selected = getLanguageMenuSelection(self)
+        if Input.pressed("up") then
+            self.language_selected = self.language_selected - 1
+        end
+        if Input.pressed("down") then
+            self.language_selected = self.language_selected + 1
+        end
+        self.language_selected = MathUtils.clamp(self.language_selected, 1, 3)
+
+        if old_selected ~= self.language_selected then
+            playMenuSound(self, "ui_move")
+        end
+
+        local changed = false
+        if Input.pressed("left") then
+            if self.language_selected == 1 then
+                changed = changeLanguage(-1)
+            elseif self.language_selected == 2 then
+                changed = changeNameStyle(-1)
+            end
+        end
+        if Input.pressed("right") then
+            if self.language_selected == 1 then
+                changed = changeLanguage(1)
+            elseif self.language_selected == 2 then
+                changed = changeNameStyle(1)
+            end
+        end
+
+        if changed then
             playMenuSound(self, "ui_move")
         end
     end
@@ -159,7 +215,37 @@ function DarkConfigMenu:draw()
     love.graphics.setFont(self.font)
     Draw.setColor(PALETTE["world_text"])
 
-    if self.state ~= "CONTROLS" then
+    if self.state == "LANGUAGE" then
+        love.graphics.print(Game:loc("LANGUAGE", "language_settings_config"), 148, -12)
+
+        local selection = getLanguageMenuSelection(self)
+        local labels = {
+            Game:loc("Text Language", "text_language_config"),
+            Game:loc("Character Names", "name_style_config"),
+            Game:loc("Back", "back_config"),
+        }
+        local values = {
+            Game:getLanguageName(),
+            Game:getNameStyleName(),
+            nil,
+        }
+
+        for index, label in ipairs(labels) do
+            Draw.setColor(PALETTE["world_text"])
+            local y = 30 + ((index - 1) * 32)
+            love.graphics.print(label, 88, y)
+
+            if values[index] then
+                local text, scale = StringUtils.squishAndTrunc(values[index], self.font, 150, nil, 0.5)
+                love.graphics.print(text, 348, y, 0, scale, 1)
+            end
+        end
+
+        Draw.setColor(Game:getSoulColor())
+        Draw.draw(self.heart_sprite, 63, 40 + ((selection - 1) * 32))
+        Draw.setColor(1, 1, 1, 1)
+
+    elseif self.state ~= "CONTROLS" then
         local on, off = Game:loc("ON", "on"), Game:loc("OFF", "off")
         love.graphics.print(Game:loc("CONFIG", "config"), 188, -12)
 
@@ -188,12 +274,6 @@ function DarkConfigMenu:draw()
         love.graphics.print(Kristal.Config["simplifyVFX"] and on or off, 348, 30 + (2 * 32))
         love.graphics.print(Kristal.Config["fullscreen"] and on or off, 348, 30 + (3 * 32))
         love.graphics.print(Kristal.Config["autoRun"] and on or off, 348, 30 + (4 * 32))
-        if self.state == "LANGUAGE" then
-            Draw.setColor(PALETTE["world_text_selected"])
-        end
-        local text, scale = StringUtils.squishAndTrunc(Game:getLanguageName(), self.font, 120, nil, 0.5)
-        love.graphics.print(text, 348, 30 + (5 * 32), 0, scale, 1)
-        Draw.setColor(PALETTE["world_text"])
 
         Draw.setColor(Game:getSoulColor())
         Draw.draw(self.heart_sprite, 63, 40 + ((self.currently_selected - 1) * 32))

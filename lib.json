@@ -5,6 +5,7 @@
     "engineVer": "v0.10.0",
     "config": {
         "defaultLanguage": "en",
+        "defaultNameStyle": "translated",
         "languages": ["en", "zh_hans"],
         "languageNames": {
             "en": "English",

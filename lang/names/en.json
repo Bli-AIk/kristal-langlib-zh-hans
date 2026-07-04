@@ -1,0 +1,58 @@
+{
+    "chara": {
+        "kris": {
+            "translated": "Kris",
+            "original": "Kris"
+        },
+        "susie": {
+            "translated": "Susie",
+            "original": "Susie"
+        },
+        "ralsei": {
+            "translated": "Ralsei",
+            "original": "Ralsei"
+        },
+        "raisel": {
+            "translated": "Ralsei",
+            "original": "Ralsei"
+        },
+        "noelle": {
+            "translated": "Noelle",
+            "original": "Noelle"
+        },
+        "vessel": {
+            "translated": "Vessel",
+            "original": "Vessel"
+        }
+    },
+    "actor": {
+        "kris": {
+            "translated": "Kris",
+            "original": "Kris"
+        },
+        "susie": {
+            "translated": "Susie",
+            "original": "Susie"
+        },
+        "ralsei": {
+            "translated": "Ralsei",
+            "original": "Ralsei"
+        },
+        "raisel": {
+            "translated": "Ralsei",
+            "original": "Ralsei"
+        },
+        "noelle": {
+            "translated": "Noelle",
+            "original": "Noelle"
+        },
+        "starwalker": {
+            "translated": "Starwalker",
+            "original": "Starwalker"
+        },
+        "vessel": {
+            "translated": "Vessel",
+            "original": "Vessel"
+        }
+    }
+}
