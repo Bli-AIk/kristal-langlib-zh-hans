@@ -12,6 +12,183 @@ local NAME_STYLE_ORIGINAL = "original"
 local NAME_STYLES = { NAME_STYLE_TRANSLATED, NAME_STYLE_ORIGINAL }
 
 local STATIC_TEXT_IDS = {
+    ["~ KRISTAL DEBUG ~"] = "debug_menu_title",
+    ["Welcome to [color:cyan]KRISTAL[color:reset]! This is the debug console."] = "console_welcome",
+    ["You can enter Lua here to be ran! Use [color:gray]clear()[color:reset] to clear the console."] = "console_lua_hint",
+    ["Engine Options"] = "debug_engine_options",
+    ["Show FPS"] = "debug_show_fps",
+    ["Toggle the FPS display."] = "debug_toggle_fps_display",
+    ["Target FPS"] = "debug_target_fps",
+    ["VSync"] = "debug_vsync",
+    ["Toggle Vsync."] = "debug_toggle_vsync",
+    ["Frame Skip"] = "debug_frame_skip",
+    ["Toggle frame skipping."] = "debug_toggle_frame_skip",
+    ["Print Performance"] = "debug_print_performance",
+    ["Show performance in the console."] = "debug_show_performance",
+    ["Force GC"] = "debug_force_gc",
+    ["Force a garbage collection."] = "debug_force_gc_description",
+    ["Force Crash"] = "debug_force_crash",
+    ["Force a crash."] = "debug_force_crash_description",
+    ["Back"] = "debug_back",
+    ["Go back to the previous menu."] = "debug_back_description",
+    ["Unlimited"] = "debug_unlimited",
+    ["Set the target FPS to unlimited."] = "debug_set_target_fps_unlimited",
+    ["Custom"] = "debug_custom",
+    ["Set the target FPS to a custom value."] = "debug_set_target_fps_custom",
+    ["Enter FPS"] = "debug_enter_fps",
+    ["Enter the target FPS youd like."] = "debug_enter_fps_description",
+    ["Fast Forward"] = "debug_fast_forward",
+    ["[Toggle]"] = "debug_toggle",
+    ["Speed up the engine."] = "debug_speed_up_engine",
+    ["Give Item"] = "debug_give_item",
+    ["Select Map"] = "debug_select_map",
+    ["Teleport to this map."] = "debug_teleport_to_map",
+    ["Encounter Select"] = "debug_encounter_select",
+    ["Start this encounter."] = "debug_start_this_encounter",
+    ["Enter Shop"] = "debug_enter_shop",
+    ["Enter this shop."] = "debug_enter_this_shop",
+    ["Cutscene Select"] = "debug_cutscene_select",
+    ["[Stop Current Cutscene]"] = "debug_stop_current_cutscene",
+    ["Stop the current playing cutscene."] = "debug_stop_current_cutscene_description",
+    ["Start this cutscene."] = "debug_start_this_cutscene",
+    ["Legend Select"] = "debug_legend_select",
+    ["[Stop Current Legend]"] = "debug_stop_current_legend",
+    ["Stop the current playing Legend."] = "debug_stop_current_legend_description",
+    ["Start this legend."] = "debug_start_this_legend",
+    ["Wave Select"] = "debug_wave_select",
+    ["[Stop Current Wave]"] = "debug_stop_current_wave",
+    ["Stop the current playing wave."] = "debug_stop_current_wave_description",
+    ["Start this wave."] = "debug_start_this_wave",
+    ["Multiple Wave Select"] = "debug_multiple_wave_select",
+    ["[Start Waves]"] = "debug_start_waves",
+    ["Start the selected waves."] = "debug_start_selected_waves",
+    ["[Clear Selection]"] = "debug_clear_selection",
+    ["Clear the currently selected waves."] = "debug_clear_selected_waves",
+    ["Sound Test"] = "debug_sound_test",
+    ["Play this sound."] = "debug_play_this_sound",
+    ["Music Test"] = "debug_music_test",
+    ["Play this music track."] = "debug_play_this_music",
+    ["Change Party"] = "debug_change_party",
+    ["Add or remove this party member from the party."] = "debug_change_party_description",
+    ["Give Spell"] = "debug_give_spell",
+    ["Give a spell to this party member."] = "debug_give_spell_to_member",
+    ["Border Test"] = "debug_border_test",
+    ["Configure various noningame options."] = "debug_engine_options_description",
+    ["Selection Timestop"] = "debug_selection_timestop",
+    ["Pauses the game when the object selection menu is opened."] = "debug_selection_timestop_description",
+    ["Debug Rendering"] = "debug_rendering",
+    ["Draw debug information."] = "debug_rendering_description",
+    ["~ OBJECT SELECTION ~"] = "debug_object_selection_title",
+    ["Hotswap"] = "debug_hotswap",
+    ["Swap out code from the files. Might be unstable."] = "debug_hotswap_description",
+    ["Reload"] = "debug_reload",
+    ["Reload the mod."] = "debug_reload_mod",
+    ["Reload (tempsave)"] = "debug_reload_tempsave",
+    ["Reload the mod, creating a temporary save."] = "debug_reload_tempsave_description",
+    ["Reload (from save)"] = "debug_reload_from_save",
+    ["Reload the mod from your current save."] = "debug_reload_from_save_description",
+    ["Reload the engine."] = "debug_reload_engine",
+    ["Noclip"] = "debug_noclip",
+    ["Toggle interaction with solids."] = "debug_noclip_description",
+    ["Give an item."] = "debug_give_item_description",
+    ["Give Money"] = "debug_give_money",
+    ["Give an amount of money."] = "debug_give_money_description",
+    ["Enter Money"] = "debug_enter_money",
+    ["Enter the money amount you'd like."] = "debug_enter_money_description",
+    ["Portrait Viewer"] = "debug_portrait_viewer",
+    ["Enter the portrait viewer menu."] = "debug_portrait_viewer_description",
+    ["Flag Editor"] = "debug_flag_editor",
+    ["Enter the flag editor menu."] = "debug_flag_editor_description",
+    ["Enter the sound test menu."] = "debug_sound_test_description",
+    ["Enter the music test menu."] = "debug_music_test_description",
+    ["Enter the party change menu."] = "debug_change_party_menu_description",
+    ["Enter the border test menu."] = "debug_border_test_description",
+    ["Give a spell to a party member."] = "debug_give_spell_description",
+    ["Switch to a new map."] = "debug_switch_map_description",
+    ["Start Encounter"] = "debug_start_encounter",
+    ["Start an encounter."] = "debug_start_encounter_description",
+    ["Enter a shop."] = "debug_enter_shop_description",
+    ["Play Cutscene"] = "debug_play_cutscene",
+    ["Play a cutscene."] = "debug_play_cutscene_description",
+    ["Play Legend"] = "debug_play_legend",
+    ["Play a legend cutscene."] = "debug_play_legend_description",
+    ["Start Wave"] = "debug_start_wave",
+    ["Start a wave."] = "debug_start_wave_description",
+    ["Start Multiple Waves"] = "debug_start_multiple_waves",
+    ["Start multiple waves at once."] = "debug_start_multiple_waves_description",
+    ["End Battle"] = "debug_end_battle",
+    ["Instantly complete a battle."] = "debug_end_battle_description",
+    ["Press CONFIRM to search"] = "debug_press_confirm_search",
+    ["~ PORTRAIT VIEWER ~"] = "debug_portrait_viewer_title",
+    ["Press CONFIRM to go back."] = "debug_press_confirm_back",
+    ["Copied to clipboard!"] = "debug_copied_to_clipboard",
+    ["~ FLAG EDITOR ~"] = "debug_flag_editor_title",
+    ["Press CANCEL to go back."] = "debug_press_cancel_back",
+    ["Set a filter to customise what flags are shown."] = "debug_filter_settings_description",
+    ["Filter Settings"] = "debug_filter_settings",
+    ["~ FLAG EDITOR - FILTER SETTINGS ~"] = "debug_flag_filter_title",
+    ["Flag type:"] = "debug_flag_type_label",
+    ["Filter query:"] = "debug_filter_query_label",
+    ["Filter Mode:"] = "debug_filter_mode_label",
+    ["Reset Filter"] = "debug_reset_filter",
+    ["Save and Return"] = "debug_save_and_return",
+    ["Press CANCEL to go back without saving."] = "debug_press_cancel_back_no_save",
+    ["Shows all flag types."] = "debug_show_all_flag_types",
+    ["A query to filter flags by.\nSet FILTER MODE to change how this value is used."] = "debug_filter_query_description",
+    ["Resets the filter to it's default settings."] = "debug_reset_filter_description",
+    ["Enter a new value for this flag."] = "debug_enter_flag_value",
+    ["any"] = "debug_flag_type_any",
+    ["boolean"] = "debug_flag_type_boolean",
+    ["string"] = "debug_flag_type_string",
+    ["number"] = "debug_flag_type_number",
+    ["pattern"] = "debug_filter_mode_pattern",
+    ["invert_pattern"] = "debug_filter_mode_invert_pattern",
+    ["startsWith"] = "debug_filter_mode_starts_with",
+    ["invert_startsWith"] = "debug_filter_mode_invert_starts_with",
+    ["Debug"] = "debug_context_title",
+    ["Teleport"] = "debug_context_teleport",
+    ["Teleport the player to\nthe current position."] = "debug_context_teleport_description",
+    ["Spawn player"] = "debug_context_spawn_player",
+    ["Spawn the player at the\ncurrent position."] = "debug_context_spawn_player_description",
+    ["Paste"] = "debug_context_paste",
+    ["Paste the copied object."] = "debug_context_paste_description",
+    ["Select object"] = "debug_context_select_object",
+    ["Select an object by name."] = "debug_context_select_object_description",
+    ["Select Object"] = "debug_window_select_object",
+    ["Enter the name of the object to select."] = "debug_window_select_object_description",
+    ["Delete"] = "debug_context_delete",
+    ["Delete this object"] = "debug_context_delete_description",
+    ["Clone"] = "debug_context_clone",
+    ["Clone this object"] = "debug_context_clone_description",
+    ["Copy"] = "debug_context_copy",
+    ["Copy this object to paste it later"] = "debug_context_copy_description",
+    ["Cut"] = "debug_context_cut",
+    ["Cut this object to paste it later"] = "debug_context_cut_description",
+    ["Paste Into"] = "debug_context_paste_into",
+    ["Paste the copied object into this one"] = "debug_context_paste_into_description",
+    ["Hide"] = "debug_context_hide",
+    ["Hide this object."] = "debug_context_hide_description",
+    ["Show"] = "debug_context_show",
+    ["Show this object."] = "debug_context_show_description",
+    ["Explode"] = "debug_context_explode",
+    ["'cuz it's funny"] = "debug_context_explode_description",
+    ["Toggle force run"] = "debug_context_toggle_force_run",
+    ["Toggle if the player is forced to run or not"] = "debug_context_toggle_force_run_description",
+    ["Toggle force walk"] = "debug_context_toggle_force_walk",
+    ["Toggle if the player is forced to walk or not"] = "debug_context_toggle_force_walk_description",
+    ["Toggle force climb"] = "debug_context_toggle_force_climb",
+    ["Toggle if the player is forced to climb or not"] = "debug_context_toggle_force_climb_description",
+    ["Start climbing"] = "debug_context_start_climbing",
+    ["Start climbing where the player currently is."] = "debug_context_start_climbing_description",
+    ["Start walking"] = "debug_context_start_walking",
+    ["Start walking where the player currently is."] = "debug_context_start_walking_description",
+    ["Start sliding"] = "debug_context_start_sliding",
+    ["Start sliding where the player currently is."] = "debug_context_start_sliding_description",
+    ["Change"] = "debug_context_change",
+    ["Change this portrait to a different one"] = "debug_context_change_portrait_description",
+    ["Message Box"] = "debug_window_message_box",
+    ["Cancel"] = "debug_window_cancel",
+    ["OK"] = "debug_window_ok",
     ["Save"] = "save_menu_save",
     ["Return"] = "save_menu_return",
     ["Storage"] = "save_menu_storage",
@@ -42,6 +219,21 @@ local GAMEOVER_PARTY_TEXT_IDS = {
     ["  Kris,[wait:5]\n  get up...!"] = "gameover_susie_get_up",
     ["  This is not\n  your fate...!"] = "gameover_ralsei_fate",
     ["  Please,[wait:5]\n  don't give up!"] = "gameover_ralsei_dont_give_up",
+}
+
+local CONSOLE_STARTUP_MESSAGES = {
+    {
+        index = 1,
+        default = "Welcome to [color:cyan]KRISTAL[color:reset]! This is the debug console.",
+        plain = "Welcome to KRISTAL! This is the debug console.",
+        id = "console_welcome",
+    },
+    {
+        index = 2,
+        default = "You can enter Lua here to be ran! Use [color:gray]clear()[color:reset] to clear the console.",
+        plain = "You can enter Lua here to be ran! Use clear() to clear the console.",
+        id = "console_lua_hint",
+    },
 }
 
 local function getConfig(key, merge, deep_merge)
@@ -342,6 +534,8 @@ local function addCjkTextSpacingValue(value, spacing_value, offset_y)
     return addCjkTextSpacing(value, spacing_value, offset_y)
 end
 
+local localizeDebugPatternText
+
 local function localizeStaticText(text)
     if type(text) ~= "string" or not Game or Game.lang ~= "zh_hans" then
         return text
@@ -363,7 +557,147 @@ local function localizeStaticText(text)
         return Game:loc("Overwrite Slot [var:slot]?", "save_menu_overwrite_slot", { slot = slot })
     end
 
+    if localizeDebugPatternText then
+        local localized = localizeDebugPatternText(text)
+        if localized then
+            return localized
+        end
+    end
+
     return text
+end
+
+local function localizeDebugTypeName(value)
+    return localizeStaticText(tostring(value or ""))
+end
+
+localizeDebugPatternText = function(text)
+    local desc, state = text:match("^(.*) %((ON)%)$")
+    if not desc then
+        desc, state = text:match("^(.*) %((OFF)%)$")
+    end
+    if desc and state then
+        return Game:loc("[var:desc] ([var:state])", "debug_bool_suffix", {
+            desc = localizeStaticText(desc),
+            state = Game:loc(state, state == "ON" and "on" or "off")
+        })
+    end
+
+    local fps_text = text:match("^Set the target FPS%. %((.+)%)$")
+    if fps_text then
+        return Game:loc("Set the target FPS. ([var:fps])", "debug_target_fps_current", {
+            fps = localizeStaticText(fps_text)
+        })
+    end
+
+    local fps = text:match("^Set the target FPS to ([%d%.]+)%.$")
+    if fps then
+        return Game:loc("Set the target FPS to [var:fps].", "debug_set_target_fps_value", { fps = fps })
+    end
+
+    local speed = text:match("^Set the fast forward speed to (x[%d%.]+) multiplier%.$")
+    if speed then
+        return Game:loc("Set the fast forward speed to [var:speed] multiplier.", "debug_set_fast_forward_speed", {
+            speed = speed
+        })
+    end
+
+    local item_name = text:match("^(.*) %(Light Item%)$")
+    if item_name then
+        return Game:loc("[var:name] (Light Item)", "debug_light_item_suffix", { name = item_name })
+    end
+
+    local wave_count = text:match("^Remove this wave from the selected group%. (%(.+%))$")
+    if wave_count then
+        return Game:loc("Remove this wave from the selected group. [var:count]", "debug_remove_wave_from_group", {
+            count = wave_count
+        })
+    end
+
+    wave_count = text:match("^Add this wave to the selected group%. (%(.+%))$")
+    if wave_count then
+        return Game:loc("Add this wave to the selected group. [var:count]", "debug_add_wave_to_group", {
+            count = wave_count
+        })
+    end
+
+    local member = text:match("^Give Spell to (.+)$")
+    if member then
+        return Game:loc("Give Spell to [var:member]", "debug_give_spell_to", { member = member })
+    end
+
+    member = text:match("^Give this spell to (.+)%.$")
+    if member then
+        return Game:loc("Give this spell to [var:member].", "debug_give_this_spell_to", { member = member })
+    end
+
+    member = text:match("^Take this spell from (.+)%.$")
+    if member then
+        return Game:loc("Take this spell from [var:member].", "debug_take_this_spell_from", { member = member })
+    end
+
+    local border = text:match("^Switch to the border \"(.+)\"%.$")
+    if border then
+        return Game:loc("Switch to the border \"[var:border]\".", "debug_switch_border", { border = border })
+    end
+
+    local flag_type = text:match("^Shows only ([%w_]+) flags%.$")
+    if flag_type then
+        return Game:loc("Shows only [var:type] flags.", "debug_show_only_flag_type", {
+            type = localizeDebugTypeName(flag_type)
+        })
+    end
+
+    local filter_action = text:match("^Filters to (hide) flags whose names match to\nthe FILTER QUERY$")
+        or text:match("^Filters to (show) flags whose names match to\nthe FILTER QUERY$")
+    if filter_action then
+        return Game:loc("Filters to [var:action] flags whose names match to\nthe FILTER QUERY", "debug_filter_mode_match_description", {
+            action = Game:loc(filter_action, filter_action == "hide" and "debug_filter_action_hide" or "debug_filter_action_show")
+        })
+    end
+
+    filter_action = text:match("^Filters to (hide) flags whose names start with\nthe FILTER QUERY$")
+        or text:match("^Filters to (show) flags whose names start with\nthe FILTER QUERY$")
+    if filter_action then
+        return Game:loc("Filters to [var:action] flags whose names start with\nthe FILTER QUERY", "debug_filter_mode_starts_with_description", {
+            action = Game:loc(filter_action, filter_action == "hide" and "debug_filter_action_hide" or "debug_filter_action_show")
+        })
+    end
+
+    local flag_kind, flag_name = text:match("^Edit Flag %(([%w_]+)%) %- \"(.+)\"$")
+    if flag_kind and flag_name then
+        return Game:loc("Edit Flag ([var:type]) - \"[var:name]\"", "debug_edit_flag_title", {
+            type = localizeDebugTypeName(flag_kind),
+            name = flag_name
+        })
+    end
+
+    local selected = text:match("^Selected: (.+)$")
+    if selected then
+        return Game:loc("Selected: [var:object]", "debug_selected_object", { object = selected })
+    end
+
+    local x, y = text:match("^Mouse: %((%-?%d+), (%-?%d+)%)$")
+    if x and y then
+        return Game:loc("Mouse: ([var:x], [var:y])", "debug_mouse_position", { x = x, y = y })
+    end
+
+    x, y = text:match("^Position: %((%-?%d+), (%-?%d+)%)$")
+    if x and y then
+        return Game:loc("Position: ([var:x], [var:y])", "debug_object_position", { x = x, y = y })
+    end
+
+    x, y = text:match("^Screen Pos: %((%-?%d+), (%-?%d+)%)$")
+    if x and y then
+        return Game:loc("Screen Pos: ([var:x], [var:y])", "debug_object_screen_position", { x = x, y = y })
+    end
+
+    local world_id = text:match("^World ID: (.+)$")
+    if world_id then
+        return Game:loc("World ID: [var:id]", "debug_world_id", { id = world_id })
+    end
+
+    return nil
 end
 
 local function localizeStaticTextValue(value)
@@ -375,6 +709,82 @@ local function localizeStaticTextValue(value)
         return out
     end
     return localizeStaticText(value)
+end
+
+local function localizeDynamicStaticTextValue(value)
+    if type(value) == "function" then
+        return function(...)
+            return localizeStaticText(value(...))
+        end
+    elseif type(value) == "string" then
+        return function()
+            return localizeStaticText(value)
+        end
+    end
+    return value
+end
+
+local function refreshDebugOptionDescriptions()
+    if not Kristal or not Kristal.DebugSystem or not Kristal.DebugSystem.menus then
+        return
+    end
+
+    for _, menu in pairs(Kristal.DebugSystem.menus) do
+        for _, option in ipairs(menu.options or {}) do
+            if option.description and not option.__langlib_zh_description_wrapped then
+                option.description = localizeDynamicStaticTextValue(option.description)
+                option.__langlib_zh_description_wrapped = true
+            end
+        end
+    end
+end
+
+local function getConsoleHistoryPlainText(line)
+    if type(line) ~= "table" then
+        return tostring(line or "")
+    end
+
+    local result = {}
+    for _, part in ipairs(line) do
+        if type(part) == "string" then
+            table.insert(result, part)
+        end
+    end
+    return table.concat(result)
+end
+
+local function parseConsoleHistoryLines(console, text)
+    local history = console.history
+    console.history = {}
+    console:push(text)
+    local parsed = console.history
+    console.history = history
+    return parsed
+end
+
+local function refreshConsoleStartupHistory()
+    if not Kristal or not Kristal.Console or not Kristal.Console.history then
+        return
+    end
+
+    local console = Kristal.Console
+    if not console.__langlib_zh_startup_localized then
+        local first = CONSOLE_STARTUP_MESSAGES[1]
+        if getConsoleHistoryPlainText(console.history[first.index]) ~= first.plain then
+            return
+        end
+    elseif not console.history[1] then
+        return
+    end
+
+    for _, message in ipairs(CONSOLE_STARTUP_MESSAGES) do
+        if console.history[message.index] then
+            local parsed = parseConsoleHistoryLines(console, Game:loc(message.default, message.id))
+            console.history[message.index] = parsed[1] or { "" }
+        end
+    end
+
+    console.__langlib_zh_startup_localized = true
 end
 
 local function shouldPrintWithCjkSpacing(text)
@@ -698,7 +1108,29 @@ local function localizeTextValue(value, id, var)
     return Game:loc(value, id, var)
 end
 
+local function refreshCachedFont(object)
+    if object and object.font and object.font_name then
+        object.font = Assets.getFont(object.font_name, object.font_size)
+    end
+end
+
+local function refreshCachedEngineFonts()
+    if not Kristal then
+        return
+    end
+
+    refreshCachedFont(Kristal.Console)
+    refreshCachedFont(Kristal.DebugSystem)
+
+    if Kristal.DebugSystem then
+        refreshCachedFont(Kristal.DebugSystem.context)
+        refreshCachedFont(Kristal.DebugSystem.window)
+    end
+end
+
 local function refreshLocalizedAssets()
+    refreshCachedEngineFonts()
+
     if not Game or not Game.stage then
         return
     end
@@ -1084,6 +1516,88 @@ function langLibZh:postInit()
             return orig(self, text, visible)
         end)
     end
+
+    if DebugSystem then
+        HookSystem.hook(DebugSystem, "registerOption", function(orig, self, menu, name, description, func, visible_func, color)
+            return orig(self, menu, name, localizeDynamicStaticTextValue(description), func, visible_func, color)
+        end)
+
+        HookSystem.hook(DebugSystem, "appendBool", function(orig, self, desc, bool)
+            if Game.lang == "zh_hans" then
+                return Game:loc("[var:desc] ([var:state])", "debug_bool_suffix", {
+                    desc = localizeStaticText(desc),
+                    state = Game:loc(bool and "ON" or "OFF", bool and "on" or "off")
+                })
+            end
+            return orig(self, desc, bool)
+        end)
+
+        HookSystem.hook(DebugSystem, "printShadow", function(orig, self, text, ...)
+            return orig(self, localizeStaticText(text), ...)
+        end)
+
+        refreshDebugOptionDescriptions()
+    end
+
+    if ContextMenu then
+        HookSystem.hook(ContextMenu, "init", function(orig, self, name)
+            return orig(self, localizeStaticText(name))
+        end)
+
+        HookSystem.hook(ContextMenu, "addMenuItem", function(orig, self, name, description, callback, options)
+            return orig(self, localizeStaticText(name), localizeStaticText(description), callback, options)
+        end)
+    end
+
+    if DebugWindow then
+        HookSystem.hook(DebugWindow, "init", function(orig, self, name, text, type, callback)
+            local result = orig(self, localizeStaticText(name), localizeStaticText(text), type, callback)
+            for index, button in ipairs(self.buttons or {}) do
+                self.buttons[index] = localizeStaticText(button)
+            end
+            return result
+        end)
+    end
+
+    if Console then
+        HookSystem.hook(Console, "print", function(orig, self, text, x, y)
+            if Game.lang ~= "zh_hans" then
+                return orig(self, text, x, y)
+            end
+            if text == nil then
+                return
+            end
+
+            local x_offset = 0
+
+            for _, line in ipairs(text) do
+                Draw.setColor(self.color)
+                if type(line) == "table" then
+                    self.color = line
+                else
+                    self:printOutlined(line, x + x_offset, y)
+                    if shouldPrintWithCjkSpacing(line) then
+                        x_offset = x_offset + getCjkPrintedTextWidth(self.font, line)
+                    else
+                        x_offset = x_offset + self.font:getWidth(line)
+                    end
+                end
+            end
+        end)
+
+        HookSystem.hook(Console, "push", function(orig, self, str)
+            return orig(self, localizeStaticText(str))
+        end)
+        refreshConsoleStartupHistory()
+    end
+
+    HookSystem.hook(Game, "setLanguage", function(orig, lang, refresh_assets)
+        local result = orig(lang, refresh_assets)
+        if result then
+            refreshConsoleStartupHistory()
+        end
+        return result
+    end)
 
     refreshLocalizedAssets()
 end
