@@ -806,6 +806,22 @@ local function getCjkPrintedTextWidth(font, text)
     return width
 end
 
+local function getPrintedLineWidth(font, text)
+    text = tostring(text or "")
+    if shouldPrintWithCjkSpacing(text) then
+        return getCjkPrintedTextWidth(font, text)
+    end
+    return font:getWidth(text)
+end
+
+local function getPrintedTextWidth(font, text)
+    local width = 0
+    for line in (tostring(text or "") .. "\n"):gmatch("(.-)\n") do
+        width = math.max(width, getPrintedLineWidth(font, line))
+    end
+    return width
+end
+
 local function printCjkTextWithSpacing(orig, text, x, y, r, sx, sy, ox, oy, kx, ky)
     text = localizeStaticText(text)
 
@@ -1546,6 +1562,120 @@ function langLibZh:postInit()
 
         HookSystem.hook(ContextMenu, "addMenuItem", function(orig, self, name, description, callback, options)
             return orig(self, localizeStaticText(name), localizeStaticText(description), callback, options)
+        end)
+
+        HookSystem.hook(ContextMenu, "getInnerWidth", function(orig, self)
+            if Game.lang ~= "zh_hans" then
+                return orig(self)
+            end
+
+            local inner_width = getPrintedTextWidth(self.font, self.name or "")
+
+            for _, item in ipairs(self.items or {}) do
+                inner_width = math.max(inner_width, getPrintedTextWidth(self.font, item.name or ""))
+            end
+
+            return inner_width
+        end)
+
+        HookSystem.hook(ContextMenu, "draw", function(orig, self)
+            if Game.lang ~= "zh_hans" then
+                return orig(self)
+            end
+
+            local bg_color = { 0.156863, 0.172549, 0.211765, 0.8 }
+            local highlighted_color = { 1, 0.070588, 0.466667, 0.8 }
+
+            if self.adjusted then
+                self:keepInBounds()
+            else
+                self.adjusted = false
+                self:adjustToCorner()
+            end
+
+            local padding_x = self:getHorizontalPadding()
+            local padding_y = self:getVerticalPadding()
+
+            local canvas = Draw.pushCanvas(SCREEN_WIDTH, SCREEN_HEIGHT)
+            love.graphics.clear()
+
+            love.graphics.setFont(self.font)
+            Draw.setColor(1, 1, 1, 1)
+            local offset = self:getVerticalPadding()
+            local tooltip_to_draw = nil
+            if self.name then
+                offset = offset + self.font:getHeight() + 4
+                Draw.setColor(bg_color)
+                love.graphics.rectangle("fill", 0, 0, self.width, offset)
+
+                Draw.setColor(1, 1, 1, 1)
+                love.graphics.print(self.name, padding_x, padding_y)
+
+                love.graphics.setLineWidth(2)
+                love.graphics.line(0, offset, self.width, offset)
+            end
+
+            for _, item in ipairs(self.items) do
+                if self:isMouseOver(0, offset, self.width, offset + item.height) then
+                    Draw.setColor(highlighted_color)
+                    tooltip_to_draw = item
+                else
+                    Draw.setColor(bg_color)
+                end
+                love.graphics.rectangle("fill", 0, offset, self.width, item.height)
+
+                Draw.setColor(1, 1, 1, 1)
+                love.graphics.print(item.name or "", padding_x, padding_y + offset - 3)
+                offset = offset + item.height
+            end
+
+            Draw.setColor(bg_color)
+            love.graphics.rectangle("fill", 0, offset, self.width, self.height - offset)
+
+            Draw.setColor(1, 1, 1, 1)
+
+            Draw.popCanvas()
+
+            local anim = Utils.ease(0, 1, self.anim_timer / 0.2, "outQuad")
+            Draw.setColor(1, 1, 1, anim)
+            Draw.draw(canvas, 0, 12 - (anim * 12))
+
+            if tooltip_to_draw then
+                local mouse_x, mouse_y = self:getLocalMousePosition()
+                local tooltip_x, tooltip_y = mouse_x + 12, mouse_y
+                local tooltip_padding_x, tooltip_padding_y = 2, 2
+                local description = tooltip_to_draw.description or ""
+                local lines = StringUtils.split(description, "\n", false)
+                local tooltip_width = tooltip_padding_x * 2 + getPrintedTextWidth(self.font, description)
+                local tooltip_height = tooltip_padding_y * 2 + self.font:getHeight() * #lines
+                local screen_right, screen_bottom = self:screenToLocalPos(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+                if tooltip_x + tooltip_width > screen_right then
+                    tooltip_x = mouse_x - tooltip_width - 4
+                end
+                if tooltip_y + tooltip_height > screen_bottom then
+                    tooltip_y = mouse_y - tooltip_height - 4
+                end
+                tooltip_x = math.max(0, tooltip_x)
+                tooltip_y = math.max(0, tooltip_y)
+
+                local tooltip = Draw.pushCanvas(tooltip_width, tooltip_height)
+                love.graphics.clear()
+                Draw.setColor(bg_color)
+
+                love.graphics.rectangle("fill", 0, 0, tooltip_width, tooltip_height)
+
+                Draw.setColor(1, 1, 1, 1)
+                love.graphics.print(description, tooltip_padding_x, tooltip_padding_y - 2)
+
+                Draw.popCanvas()
+                Draw.setColor(1, 1, 1, anim)
+                Draw.draw(tooltip, tooltip_x + (12 - (anim * 12)), tooltip_y)
+            end
+
+            if Object and Object.draw then
+                Object.draw(self)
+            end
         end)
     end
 
