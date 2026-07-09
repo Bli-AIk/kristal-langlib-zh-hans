@@ -206,6 +206,16 @@ Assets.getFont("main")           -- → lang/zh_hans/main.ttf
 Assets.playSound("voice/noelle") -- → lang/zh_hans/voice/noelle.wav
 ```
 
+Texture overrides also support a name-style layer. For `Assets.getTexture("party/kris/name")`, lookup order is:
+
+```text
+lang/zh_hans/translated/party/kris/name.png
+lang/zh_hans/party/kris/name.png
+party/kris/name.png
+```
+
+When `Game:getNameStyle()` is `"translated"`, the `translated` layer has the highest priority. When switched to `"original"`, the `original` layer is checked first, then the normal language override and the base asset. Put textures that should follow the translated/original character-name setting in the matching layer; keep normal Chinese UI textures in `lang/zh_hans/...`.
+
 ### Chinese Fonts
 
 The library includes built-in Chinese fallback fonts. The strategy is:
@@ -236,11 +246,13 @@ data.langNameStyle
 
 This library is based on [LangLib](https://gamebanana.com/mods/627141) from GameBanana and references the following Chinese localization projects:
 
+The bundled Chinese texture overrides use texture assets from [Goodman 3 Localization Group | UNDERTALE & DELTARUNE Chinese Localization](https://github.com/gm3dr/).
+
 | Project | Author/Organization |
 |---------|---------------------|
 | [LangLib](https://gamebanana.com/mods/627141) | Elioze |
 | Chinese localization references from other Kristal projects | [WasneetPotato](https://space.bilibili.com/1641628190) |
-| [DeltaruneChinese](https://github.com/gm3dr/DeltaruneChinese) | dr好人汉化组 |
+| [DeltaruneChinese](https://github.com/gm3dr/DeltaruneChinese) | [Goodman 3 Localization Group \| UNDERTALE & DELTARUNE Chinese Localization](https://github.com/gm3dr/) |
 | Chinese fork | Aik/Codex |
 
 ## Contributing

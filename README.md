@@ -206,6 +206,16 @@ Assets.getFont("main")           -- → lang/zh_hans/main.ttf
 Assets.playSound("voice/noelle") -- → lang/zh_hans/voice/noelle.wav
 ```
 
+贴图还支持名字显示方式覆盖层。以 `Assets.getTexture("party/kris/name")` 为例：
+
+```text
+lang/zh_hans/translated/party/kris/name.png
+lang/zh_hans/party/kris/name.png
+party/kris/name.png
+```
+
+当 `Game:getNameStyle()` 为 `"translated"` 时，`translated` 覆盖层优先级最高；切换为 `"original"` 后会优先查找 `original` 覆盖层，找不到则回退到普通语言贴图和本体贴图。需要跟随“译名/原名”设置的贴图应放在对应覆盖层，普通中文 UI 贴图仍放 `lang/zh_hans/...`。
+
 ### 中文字体
 
 库内已内置中文 fallback 字体配置。策略：
@@ -236,11 +246,13 @@ data.langNameStyle
 
 本库基于 GameBanana 的 [LangLib](https://gamebanana.com/mods/627141) 改造，并参考了以下汉化项目：
 
+本库内置的中文贴图使用了 [好人汉化组（Goodman 3 Localization Group | UNDERTALE & DELTARUNE Chinese Localization）](https://github.com/gm3dr/) 的贴图。
+
 | 项目 | 作者/组织 |
 |------|-----------|
 | [LangLib](https://gamebanana.com/mods/627141) | Elioze |
 | 若干其他 Kristal 项目的汉化参考 | [WasneetPotato](https://space.bilibili.com/1641628190) |
-| [DeltaruneChinese](https://github.com/gm3dr/DeltaruneChinese) | dr好人汉化组 |
+| [DeltaruneChinese](https://github.com/gm3dr/DeltaruneChinese) | [好人汉化组（Goodman 3 Localization Group \| UNDERTALE & DELTARUNE Chinese Localization）](https://github.com/gm3dr/) |
 | 中文 fork | Aik/Codex |
 
 ## 参与贡献

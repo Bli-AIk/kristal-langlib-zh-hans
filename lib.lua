@@ -1170,6 +1170,29 @@ local function refreshLocalizedAssets()
     end
 end
 
+local function getLocalizedTexturePaths(path)
+    if type(path) ~= "string" then
+        return {}
+    end
+
+    local lang = Game.lang or FALLBACK_LANGUAGE
+    local style = normalizeNameStyle(Game.langNameStyle)
+    return {
+        "lang/" .. lang .. "/" .. style .. "/" .. path,
+        "lang/" .. lang .. "/" .. path,
+    }
+end
+
+local function getLocalizedTextureAsset(orig, path)
+    for _, lang_path in ipairs(getLocalizedTexturePaths(path)) do
+        local asset = orig(lang_path)
+        if asset then
+            return asset
+        end
+    end
+    return orig(path)
+end
+
 local function applyItemLocalizationPatch(item)
     if not item or item.__langlib_zh_localized then
         return item
@@ -1296,23 +1319,19 @@ function langLibZh:postInit()
     end)
 
     HookSystem.hook(Assets, "getTexture", function(orig, path)
-        local lang_path = "lang/" .. (Game.lang or FALLBACK_LANGUAGE) .. "/" .. path
-        return orig(lang_path) or orig(path)
+        return getLocalizedTextureAsset(orig, path)
     end)
 
     HookSystem.hook(Assets, "getTextureData", function(orig, path)
-        local lang_path = "lang/" .. (Game.lang or FALLBACK_LANGUAGE) .. "/" .. path
-        return orig(lang_path) or orig(path)
+        return getLocalizedTextureAsset(orig, path)
     end)
 
     HookSystem.hook(Assets, "getFrames", function(orig, path)
-        local lang_path = "lang/" .. (Game.lang or FALLBACK_LANGUAGE) .. "/" .. path
-        return orig(lang_path) or orig(path)
+        return getLocalizedTextureAsset(orig, path)
     end)
 
     HookSystem.hook(Assets, "getFrameIds", function(orig, path)
-        local lang_path = "lang/" .. (Game.lang or FALLBACK_LANGUAGE) .. "/" .. path
-        return orig(lang_path) or orig(path)
+        return getLocalizedTextureAsset(orig, path)
     end)
 
     HookSystem.hook(Assets, "getSound", function(orig, sound)
@@ -1804,10 +1823,14 @@ function Game:getLanguages()
     return tableCopy(Game.langAvailable)
 end
 
-function Game:setNameStyle(style)
+function Game:setNameStyle(style, refresh_assets)
     ensureLanguageGlobals()
+    local old_style = Game.langNameStyle
     Game.langNameStyle = normalizeNameStyle(style)
     Game.langNameStyleSelected = getNameStyleIndex(Game.langNameStyle)
+    if refresh_assets ~= false and old_style ~= Game.langNameStyle then
+        refreshLocalizedAssets()
+    end
     return true
 end
 
