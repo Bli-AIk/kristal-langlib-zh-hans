@@ -27,7 +27,7 @@ Once the library is installed, a mod only needs a language JSON file to achieve 
 - 🔤 UTF-8-safe `[var:name]` variable substitution
 - 👤 `Game:locName(category, id, default)` with translated/original character name styles
 - 🔍 `auto` mode for automatic system language detection and best-match selection
-- 🔄 Runtime language switching (F6 hotkey), persisted to save data
+- 🔄 Runtime language switching (the integration mod binds it to F7), persisted to save data
 - 📝 `cutscene:text(..., {id = "text_id"})` and `cutscene:choicer(..., {ids = {...}})` for direct id-based localization
 - 🎨 Language-specific asset overrides: fonts, sprites, audio, music, and video via `lang/<lang>/...` paths
 - 🔣 Automatic CJK character spacing adjustment and typewriter speed correction
@@ -232,7 +232,7 @@ Game:setLanguage("zh_hans")
 Game:setLanguage("en")
 ```
 
-Press F6 in-game to toggle between languages.
+In this test mod, press F7 to toggle between languages. F6 is reserved by Kristal for debug rendering.
 
 Language and name display settings are persisted to save data:
 

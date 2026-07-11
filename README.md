@@ -27,7 +27,7 @@
 - 🔤 UTF-8 安全的 `[var:name]` 变量替换
 - 👤 `Game:locName(category, id, default)` 支持角色名译名 / 原名切换
 - 🔍 `auto` 模式自动检测系统语言并匹配最佳可用语言
-- 🔄 运行时语言切换（F6 快捷键），切换结果写入存档
+- 🔄 运行时语言切换（由集成模组绑定 F7 快捷键），切换结果写入存档
 - 📝 `cutscene:text(..., {id = "text_id"})` 和 `cutscene:choicer(..., {ids = {...}})` 直接按 id 本地化
 - 🎨 资源按语言覆盖：字体、贴图、音频、音乐、视频均可放到 `lang/<语言>/...` 路径
 - 🔣 CJK 字符自动字间距调整与打字机速度修正
@@ -232,7 +232,7 @@ Game:setLanguage("zh_hans")
 Game:setLanguage("en")
 ```
 
-程序内按 F6 可直接切换。
+在本测试模组中按 F7 可直接切换；F6 保留给 Kristal 的调试渲染功能。
 
 语言和名字显示方式会写入存档：
 
