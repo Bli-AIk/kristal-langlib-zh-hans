@@ -94,7 +94,7 @@ scripts/hooks/...
 
 `defaultLanguage` 可设置为具体语言 ID 或 `"auto"`。`"auto"` 会读取系统语言并从 `languages` 列表中选择最接近的可用语言；匹配不到时回退到列表首项或英文。
 
-`defaultNameStyle` 可设置为 `"translated"` 或 `"original"`，控制默认使用译名还是原名。
+`defaultNameStyle` 可设置为 `"translated"` 或 `"original"`，控制默认使用译名还是原名。引擎选项中另有独立的 `Debug Mode Terminology`（调试模式专有名词翻译）选项，用于切换 `wave`、`encounter`、`cutscene`、`legend`、`battle`、`object`、`debug` 等调试术语的翻译；该选项与角色名设置相互独立。`engine` 始终翻译为“引擎”。
 
 ## 使用方式
 
@@ -240,6 +240,7 @@ Game:setLanguage("en")
 data.lang
 data.langSelected
 data.langNameStyle
+data.langDebugTermsTranslated
 ```
 
 ## 上游来源与参考

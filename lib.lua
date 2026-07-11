@@ -78,6 +78,8 @@ local STATIC_TEXT_IDS = {
     ["Pauses the game when the object selection menu is opened."] = "debug_selection_timestop_description",
     ["Debug Rendering"] = "debug_rendering",
     ["Draw debug information."] = "debug_rendering_description",
+    ["Debug Mode Terminology"] = "debug_terminology",
+    ["Translate debug mode terminology."] = "debug_translate_terminology",
     ["- KEYS -"] = "debug_battle_keys",
     ["CTRL+H - heal party"] = "debug_battle_heal_party",
     ["CTRL+Y - win battle"] = "debug_battle_win_battle",
@@ -303,6 +305,32 @@ local function normalizeNameStyle(style)
         return NAME_STYLE_ORIGINAL
     end
     return NAME_STYLE_TRANSLATED
+end
+
+local ORIGINAL_TERM_REPLACEMENTS = {
+    { translated = "传说过场", original = "legend cutscene" },
+    { translated = "波次", original = "wave" },
+    { translated = "遭遇战", original = "encounter" },
+    { translated = "过场", original = "cutscene" },
+    { translated = "传说", original = "legend" },
+    { translated = "战斗", original = "battle" },
+    { translated = "对象", original = "object" },
+    { translated = "调试", original = "debug" },
+}
+
+local function applyOriginalDebugTermReplacements(value)
+    if type(value) ~= "string"
+        or not Game
+        or Game.lang ~= "zh_hans"
+        or Game.langDebugTermsTranslated ~= false
+    then
+        return value
+    end
+
+    for _, term in ipairs(ORIGINAL_TERM_REPLACEMENTS) do
+        value = value:gsub(term.translated, term.original)
+    end
+    return value
 end
 
 local function getNameStyleIndex(style)
@@ -549,30 +577,26 @@ local function localizeStaticText(text)
         return text
     end
 
+    local localized
     local id = STATIC_TEXT_IDS[text]
     if id then
-        return Game:loc(text, id)
-    end
-
-    local prefix, gameover_party_text = text:match("^(%[speed:0%.5%]%[spacing:%d+%]%[voice:[^%]]+%])(.*)$")
-    id = gameover_party_text and GAMEOVER_PARTY_TEXT_IDS[gameover_party_text]
-    if id then
-        return prefix .. Game:loc(gameover_party_text, id)
-    end
-
-    local slot = text:match("^Overwrite Slot (%d+)%?$")
-    if slot then
-        return Game:loc("Overwrite Slot [var:slot]?", "save_menu_overwrite_slot", { slot = slot })
-    end
-
-    if localizeDebugPatternText then
-        local localized = localizeDebugPatternText(text)
-        if localized then
-            return localized
+        localized = Game:loc(text, id)
+    else
+        local prefix, gameover_party_text = text:match("^(%[speed:0%.5%]%[spacing:%d+%]%[voice:[^%]]+%])(.*)$")
+        id = gameover_party_text and GAMEOVER_PARTY_TEXT_IDS[gameover_party_text]
+        if id then
+            localized = prefix .. Game:loc(gameover_party_text, id)
+        else
+            local slot = text:match("^Overwrite Slot (%d+)%?$")
+            if slot then
+                localized = Game:loc("Overwrite Slot [var:slot]?", "save_menu_overwrite_slot", { slot = slot })
+            elseif localizeDebugPatternText then
+                localized = localizeDebugPatternText(text)
+            end
         end
     end
 
-    return text
+    return applyOriginalDebugTermReplacements(localized or text)
 end
 
 local function localizeDebugTypeName(value)
@@ -933,6 +957,9 @@ local function ensureLanguageGlobals()
 
     Game.lang = resolveLanguageId(Game.lang or getConfig("defaultLanguage") or DEFAULT_LANGUAGE, Game.langAvailable)
         or getDefaultLanguage(Game.langAvailable)
+    if Game.langDebugTermsTranslated == nil then
+        Game.langDebugTermsTranslated = true
+    end
 
     Game.langSelected = Game.langSelected or 1
     for index, lang in ipairs(Game.langAvailable) do
@@ -1323,6 +1350,22 @@ end
 
 function langLibZh:init()
     ensureLanguageGlobals()
+end
+
+function langLibZh:registerDebugOptions(debug_system)
+    debug_system:registerOption(
+        "engine_options",
+        "Debug Mode Terminology",
+        function()
+            return debug_system:appendBool(
+                "Translate debug mode terminology.",
+                Game:getDebugTermsTranslated()
+            )
+        end,
+        function()
+            Game:setDebugTermsTranslated(not Game:getDebugTermsTranslated())
+        end
+    )
 end
 
 function langLibZh:postInit()
@@ -1777,6 +1820,7 @@ function langLibZh:load(data)
     Game.langSelected = data.langSelected or Game.langSelected or 1
     Game.langNameStyle = normalizeNameStyle(data.langNameStyle or data.nameStyle or Game.langNameStyle or getConfig("defaultNameStyle"))
     Game.langNameStyleSelected = getNameStyleIndex(Game.langNameStyle)
+    Game.langDebugTermsTranslated = data.langDebugTermsTranslated ~= false
 
     Game:loadLang(Game.lang)
     return data
@@ -1786,6 +1830,7 @@ function langLibZh:save(data)
     data.lang = Game.lang
     data.langSelected = Game.langSelected
     data.langNameStyle = Game.langNameStyle
+    data.langDebugTermsTranslated = Game:getDebugTermsTranslated()
     return data
 end
 
@@ -1855,6 +1900,15 @@ end
 function Game:getNameStyle()
     ensureLanguageGlobals()
     return Game.langNameStyle
+end
+
+function Game:setDebugTermsTranslated(translated)
+    Game.langDebugTermsTranslated = translated ~= false
+    return Game.langDebugTermsTranslated
+end
+
+function Game:getDebugTermsTranslated()
+    return Game.langDebugTermsTranslated ~= false
 end
 
 function Game:getNameStyles()

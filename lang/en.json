@@ -107,6 +107,8 @@
     "debug_selection_timestop_description": "Pauses the game when the object selection menu is opened.",
     "debug_rendering": "Debug Rendering",
     "debug_rendering_description": "Draw debug information.",
+    "debug_terminology": "Debug Mode Terminology",
+    "debug_translate_terminology": "Translate debug mode terminology.",
     "debug_battle_keys": "- KEYS -",
     "debug_battle_state": "State: [var:state]",
     "debug_battle_substate": "Substate: [var:substate]",

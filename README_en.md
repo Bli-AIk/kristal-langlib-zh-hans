@@ -94,7 +94,7 @@ Override in your mod's `mod.json`:
 
 `defaultLanguage` can be a specific language ID or `"auto"`. `"auto"` reads the system language and selects the closest match from the `languages` list; if no match is found, it falls back to the first item or English.
 
-`defaultNameStyle` can be `"translated"` or `"original"` and controls the default character name display style.
+`defaultNameStyle` can be `"translated"` or `"original"` and controls the default name display style. The Engine Options menu has a separate `Debug Mode Terminology` option for toggling translations of terms such as `wave`, `encounter`, `cutscene`, `legend`, `battle`, `object`, and `debug`; it is independent from the character-name setting. `engine` remains translated as `引擎`.
 
 ## Usage
 
@@ -240,6 +240,7 @@ Language and name display settings are persisted to save data:
 data.lang
 data.langSelected
 data.langNameStyle
+data.langDebugTermsTranslated
 ```
 
 ## Upstream & References
