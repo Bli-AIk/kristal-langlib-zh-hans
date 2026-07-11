@@ -78,6 +78,14 @@ local STATIC_TEXT_IDS = {
     ["Pauses the game when the object selection menu is opened."] = "debug_selection_timestop_description",
     ["Debug Rendering"] = "debug_rendering",
     ["Draw debug information."] = "debug_rendering_description",
+    ["- KEYS -"] = "debug_battle_keys",
+    ["CTRL+H - heal party"] = "debug_battle_heal_party",
+    ["CTRL+Y - win battle"] = "debug_battle_win_battle",
+    ["CTRL+M - pause/resume music"] = "debug_battle_pause_resume_music",
+    ["CTRL+F - end current wave"] = "debug_battle_end_current_wave",
+    ["CTRL+B - kill party"] = "debug_battle_kill_party",
+    ["CTRL+K - fill tension"] = "debug_battle_fill_tension",
+    ["CTRL+N - toggle noclip"] = "debug_battle_toggle_noclip",
     ["~ OBJECT SELECTION ~"] = "debug_object_selection_title",
     ["Hotswap"] = "debug_hotswap",
     ["Swap out code from the files. Might be unstable."] = "debug_hotswap_description",
@@ -572,6 +580,16 @@ local function localizeDebugTypeName(value)
 end
 
 localizeDebugPatternText = function(text)
+    local state = text:match("^State: (.+)$")
+    if state then
+        return Game:loc("State: [var:state]", "debug_battle_state", { state = state })
+    end
+
+    local substate = text:match("^Substate: (.+)$")
+    if substate then
+        return Game:loc("Substate: [var:substate]", "debug_battle_substate", { substate = substate })
+    end
+
     local desc, state = text:match("^(.*) %((ON)%)$")
     if not desc then
         desc, state = text:match("^(.*) %((OFF)%)$")
